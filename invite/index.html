@@ -12,17 +12,15 @@
     <main class="shell">
       <section class="panel">
         <img class="brand-logo" src="/assets/azami-wordmark.svg" alt="azami">
-        <h1>招待コードを受け取る</h1>
-        <p class="lead">アプリが入っている場合は、そのまま招待リンクを開けます。開けない場合は表示されたコードをアプリ内で入力してください。</p>
+        <h1 class="invite-title">招待コードを受け取る</h1>
+
+        <div class="code-card" id="code-card" hidden>
+          <p class="code" id="invite-code"></p>
+        </div>
 
         <div class="actions">
           <button class="button" id="open-app-button" type="button">アプリで開く</button>
           <button class="button secondary" id="copy-code-button" type="button" hidden>コードをコピー</button>
-        </div>
-
-        <div class="code-card" id="code-card" hidden>
-          <p class="code-label">招待コード</p>
-          <p class="code" id="invite-code"></p>
         </div>
 
         <p class="status" id="status" aria-live="polite">招待リンクを確認しています。</p>
@@ -49,6 +47,13 @@
       function setStatus(message, isError = false) {
         statusEl.textContent = message;
         statusEl.classList.toggle("error", isError);
+      }
+
+      function showInviteCode(code) {
+        inviteCode = code;
+        codeEl.textContent = inviteCode;
+        codeCardEl.hidden = false;
+        copyCodeButton.hidden = false;
       }
 
       function openApp() {
@@ -82,16 +87,14 @@
           }
 
           const rows = await response.json();
-          inviteCode = rows?.[0]?.invite_code || "";
+          const resolvedInviteCode = rows?.[0]?.invite_code || "";
 
-          if (!inviteCode) {
+          if (!resolvedInviteCode) {
             setStatus("招待リンクが無効、または期限切れです。", true);
             return;
           }
 
-          codeEl.textContent = inviteCode;
-          codeCardEl.hidden = false;
-          copyCodeButton.hidden = false;
+          showInviteCode(resolvedInviteCode);
           setStatus("アプリで開けない場合は、このコードをアプリ内で入力してください。");
         } catch (error) {
           setStatus("招待コードを表示できませんでした。アプリで開くか、時間をおいて再度お試しください。", true);
@@ -112,7 +115,9 @@
       copyCodeButton.addEventListener("click", copyCode);
 
       lookupInviteCode();
-      window.setTimeout(openApp, 450);
+      if (TOKEN_PATTERN.test(token)) {
+        window.setTimeout(openApp, 450);
+      }
     </script>
   </body>
 </html>
