@@ -2,8 +2,8 @@
   <title id="title">azami</title>
   <style>
     :root {
-      --logo-fill: #f4f4f4;
-      --logo-cutout: #050505;
+      --logo-fill: #111111;
+      --logo-cutout: #f6f6f6;
     }
 
     @media (prefers-color-scheme: dark) {
