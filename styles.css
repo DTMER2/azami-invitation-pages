@@ -1,14 +1,14 @@
 :root {
   color-scheme: light dark;
-  --bg: #f7f7f2;
+  --bg: #f6f6f6;
   --panel: #ffffff;
-  --ink: #17201b;
-  --muted: #5f6c64;
-  --line: #dfe5dc;
-  --accent: #216b4e;
-  --accent-pressed: #18543d;
-  --accent-soft: #e5f1eb;
-  --danger: #9d2f2f;
+  --ink: #111111;
+  --muted: #5f5f5f;
+  --line: #d8d8d8;
+  --accent: #111111;
+  --accent-pressed: #333333;
+  --accent-soft: #eeeeee;
+  --danger: #b00020;
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Segoe UI", sans-serif;
 }
 
@@ -20,9 +20,7 @@ body {
   min-height: 100vh;
   margin: 0;
   color: var(--ink);
-  background:
-    linear-gradient(180deg, rgba(33, 107, 78, 0.1), rgba(33, 107, 78, 0) 40%),
-    var(--bg);
+  background: var(--bg);
 }
 
 .shell {
@@ -32,23 +30,19 @@ body {
   padding: 28px 18px;
   display: grid;
   align-items: center;
+  text-align: center;
 }
 
 .panel {
   width: 100%;
-  padding: clamp(24px, 5vw, 42px);
-  background: color-mix(in srgb, var(--panel) 92%, transparent);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  box-shadow: 0 24px 80px rgba(23, 32, 27, 0.08);
+  padding: clamp(16px, 5vw, 42px) 0;
 }
 
-.eyebrow {
-  margin: 0 0 10px;
-  color: var(--accent);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0;
+.brand-logo {
+  width: clamp(116px, 28vw, 184px);
+  height: auto;
+  display: block;
+  margin: 0 auto 28px;
 }
 
 h1 {
@@ -69,7 +63,9 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 24px;
+  margin-top: 0;
+  padding-top: 1.5rem;
+  justify-content: center;
 }
 
 .button {
@@ -92,18 +88,19 @@ h1 {
   background: var(--accent-pressed);
 }
 
+.pt-6 {
+  margin-top: 1.5rem;
+}
+
 .button.secondary {
   color: var(--accent);
   background: var(--accent-soft);
-  border-color: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--line);
 }
 
 .code-card {
   margin-top: 24px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--accent-soft) 48%, var(--panel));
+  padding: 0;
 }
 
 .code-label {
@@ -137,19 +134,19 @@ h1 {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #111612;
-    --panel: #17201b;
-    --ink: #eef4ee;
-    --muted: #a9b7ad;
-    --line: #2b3830;
-    --accent: #74d6a8;
-    --accent-pressed: #56bd8d;
-    --accent-soft: #20382c;
+    --bg: #050505;
+    --panel: #101010;
+    --ink: #f4f4f4;
+    --muted: #a9a9a9;
+    --line: #303030;
+    --accent: #f4f4f4;
+    --accent-pressed: #d9d9d9;
+    --accent-soft: #1c1c1c;
     --danger: #ff9a9a;
   }
 
   .button {
-    color: #102217;
+    color: #101010;
   }
 
   .button.secondary {
