@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>azami 招待リンク</title>
+    <meta name="description" content="azamiの招待コードを表示し、アプリで開きます。">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel">
+        <p class="eyebrow">azami invite</p>
+        <h1>招待コードを受け取る</h1>
+        <p class="lead">アプリが入っている場合は、そのまま招待リンクを開けます。開けない場合は表示されたコードをアプリ内で入力してください。</p>
+
+        <div class="actions">
+          <button class="button" id="open-app-button" type="button">アプリで開く</button>
+          <button class="button secondary" id="copy-code-button" type="button" hidden>コードをコピー</button>
+        </div>
+
+        <div class="code-card" id="code-card" hidden>
+          <p class="code-label">招待コード</p>
+          <p class="code" id="invite-code"></p>
+        </div>
+
+        <p class="status" id="status" aria-live="polite">招待リンクを確認しています。</p>
+      </section>
+    </main>
+
+    <script>
+      const SUPABASE_URL = "https://hbmazaigojfjrnjvlcpk.supabase.co";
+      const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_WwLOo4huxKgEoJBUw8mW6w_OOddqCLs";
+      const TOKEN_PATTERN = /^[a-f0-9]{64}$/;
+
+      const params = new URLSearchParams(window.location.search);
+      const token = (params.get("token") || "").trim().toLowerCase();
+      const appUrl = `azami://azami.coremedica.jp/invite?token=${encodeURIComponent(token)}`;
+
+      const statusEl = document.getElementById("status");
+      const codeCardEl = document.getElementById("code-card");
+      const codeEl = document.getElementById("invite-code");
+      const openAppButton = document.getElementById("open-app-button");
+      const copyCodeButton = document.getElementById("copy-code-button");
+
+      let inviteCode = "";
+
+      function setStatus(message, isError = false) {
+        statusEl.textContent = message;
+        statusEl.classList.toggle("error", isError);
+      }
+
+      function openApp() {
+        if (!TOKEN_PATTERN.test(token)) {
+          setStatus("招待リンクの形式を確認してください。", true);
+          return;
+        }
+        window.location.href = appUrl;
+      }
+
+      async function lookupInviteCode() {
+        if (!TOKEN_PATTERN.test(token)) {
+          setStatus("招待リンクの形式を確認してください。", true);
+          openAppButton.disabled = true;
+          return;
+        }
+
+        try {
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/lookup_referral_invite_token`, {
+            method: "POST",
+            headers: {
+              "apikey": SUPABASE_PUBLISHABLE_KEY,
+              "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ p_token: token })
+          });
+
+          if (!response.ok) {
+            throw new Error(`lookup failed: ${response.status}`);
+          }
+
+          const rows = await response.json();
+          inviteCode = rows?.[0]?.invite_code || "";
+
+          if (!inviteCode) {
+            setStatus("招待リンクが無効、または期限切れです。", true);
+            return;
+          }
+
+          codeEl.textContent = inviteCode;
+          codeCardEl.hidden = false;
+          copyCodeButton.hidden = false;
+          setStatus("アプリで開けない場合は、このコードをアプリ内で入力してください。");
+        } catch (error) {
+          setStatus("招待コードを表示できませんでした。アプリで開くか、時間をおいて再度お試しください。", true);
+        }
+      }
+
+      async function copyCode() {
+        if (!inviteCode) return;
+        try {
+          await navigator.clipboard.writeText(inviteCode);
+          setStatus("招待コードをコピーしました。");
+        } catch (error) {
+          setStatus("コピーできませんでした。コードを選択してコピーしてください。", true);
+        }
+      }
+
+      openAppButton.addEventListener("click", openApp);
+      copyCodeButton.addEventListener("click", copyCode);
+
+      lookupInviteCode();
+      window.setTimeout(openApp, 450);
+    </script>
+  </body>
+</html>
