@@ -25,6 +25,7 @@
 
         <p class="status" id="status" aria-live="polite">招待リンクを確認しています。</p>
       </section>
+      <a class="support-link" href="https://support.coremedica.jp">サポートが必要な場合</a>
     </main>
 
     <script>
@@ -95,7 +96,7 @@
           }
 
           showInviteCode(resolvedInviteCode);
-          setStatus("アプリで開けない場合は、このコードをアプリ内で入力してください。");
+          setStatus("アプリを持っていない場合はazamiをダウンロードして，マイページ/友達招待からコードを入力してください。");
         } catch (error) {
           setStatus("招待コードを表示できませんでした。アプリで開くか、時間をおいて再度お試しください。", true);
         }
